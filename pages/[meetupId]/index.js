@@ -65,7 +65,15 @@ export async function getStaticPaths() {
         // if fallback is set to true and the user goes to "/m3", nextJs will try to generate a relative page for it
             // wouldn't return 404 on unknown route but rather nextJs generated page on the fly
                 // Not helpful here because if the meetup doesn't exist nextJs generating the page would be buggy and unneccessary 
-        fallback: false
+
+        // For deployment to vercel, this needs to be set to true or blocking.
+            // This is because getStaticPaths() isn't run but only once in deployment so any new route added isn't really added
+                // By seeting to true or blocking, it's telling NextJS that the paths specified aren't exhaustive -> this means
+                    // that there may be more routes/pages due to dynamic ability
+        // Difference in true and 'blocking' is that:
+            // true immediately returns empty page and then pulls dynamically generated content.
+            //  With 'blocking' the user won't see anything until the dynamic content page is pregenerated.
+        fallback: 'blocking'
     };
 }
 
